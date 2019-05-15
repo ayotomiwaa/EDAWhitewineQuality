@@ -1,0 +1,493 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+Exploratory Data Analysis of White Wine Quality by ADENIYI EZEKIEL AYOTOMIWA
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+theme_set(theme_minimal())
+```
+
+```{r echo=FALSE, Load_the_Data}
+
+# Load the Data
+getwd()
+setwd('C:/Users/SURFACE/Desktop/Final Project')
+  
+#load the white wine quality dataset
+
+wwq <- read.csv('wineQualityWhites.csv')
+#inspecting the data set
+
+names(wwq)
+
+#structure of dataset
+str(wwq)
+
+#converting to a factor
+wwq$X <- factor(wwq$X)
+str(wwq$X)
+#converting to a factor
+wwq$quality <- factor(wwq$quality)
+
+str(wwq$quality)
+# there are 4898 observations made in our dataset and there are 11
+#variables. Variable x and quality are an integer number.
+
+
+
+```
+
+# Univariate Plots Section
+Taking Plots of each of the variables.
+```{r echo=FALSE, Univariate_Plots}
+
+#names of our dataset
+names(wwq)
+
+#plotting the fixed acidity, binwidth of 0.1
+qplot(fixed.acidity, 
+      data = wwq,
+      binwidth = 0.1,  
+      xlim = c(4, 10),
+      xlab = 'fixed acidity',
+      color = I('black'),
+      fill = I('pink'))
+#median and mean is very close.
+summary(wwq$fixed.acidity)
+
+#summary of Volatile acidity
+summary(wwq$volatile.acidity)
+#The minimum and maximum are outliers.
+#Median is 0.26 and mean is 0.2782
+
+
+#Plotting the Volatile Acidity and using a binwidth of 0.1
+qplot(volatile.acidity, 
+      data = wwq,
+      binwidth = 0.1,
+      xlab = 'Volatile Acidity',
+      color = I('black'),
+      fill = I('pink')) +
+      scale_x_continuous(limits = c(0,0.8))
+
+
+#Plotting the citric acid content, binwidth of 0.1 
+qplot(citric.acid, 
+      data = wwq,
+      binwidth = 0.1,
+      xlab = 'Citric Acid',
+      color = I('red'),
+      fill = I('black')) +
+      scale_x_continuous(limits = c(0, 1), breaks = c(0, 1, 0.1))
+
+#The maximum is an outlier it is very far from the mean
+summary(wwq$citric.acid)
+
+#Plotting the residual sugar content 
+qplot(residual.sugar, 
+      data = wwq,
+      xlab = 'Residual Sugar',
+      color = I('black'),
+      fill = I('pink')) +
+  scale_x_continuous(limits = c(0,20), breaks = c(0, 5, 10, 15, 20))
+
+#the maximum is an outlier and a bad data
+summary(wwq$residual.sugar)
+
+
+#plotting the chloride content and limiting the x-axis from 0 to 0.1
+qplot(chlorides, 
+      data = wwq,
+      binwidth = 0.01,
+      xlab = 'Chloride Content',
+      color =I('black'),
+      fill = I('pink'))+
+      scale_x_continuous(limits = c(0, 0.1))
+
+#The distribution of variables here is positively skewed with 75% of #the distribution falling below 0.05 and the 25% between 0.05 and 0.346
+summary(wwq$chlorides)
+
+#Plotting the Free Sulfur dioxide
+qplot(free.sulfur.dioxide, 
+      data = wwq,
+      binwidth = 5) +
+      scale_x_continuous(limits = c(0,110), breaks = seq(0,140,20))
+
+#The distribution of variables is positively skewed with majority of
+#the distribution under 75%. The mean is 35.31 and the median is 34.00
+summary(wwq$free.sulfur.dioxide)
+
+
+#Plotting the Total sulfur dioxide
+qplot(total.sulfur.dioxide, data = wwq,
+      binwidth = 10,
+      xlab = 'Total Sulfur Oxide',
+      color = I('black'),
+      fill = I('red')) +
+      scale_x_continuous(limits = c(0,300), breaks = seq(0, 300, 10))
+
+#The variable distribution is positively skewed and the mean is 138 while the median is 134.
+summary(wwq$total.sulfur.dioxide)
+
+#Plotting the density
+qplot(density, 
+      data = wwq, 
+      binwidth = 0.001,
+      xlab = 'Density',
+      color = I('black'),
+      fill = I('red')) +
+  scale_x_continuous(limits = c(0.98 ,1.02))
+
+#the mean and the median are very close to each other, 0.994 and 0.9937
+#respectively
+summary(wwq$density)
+
+#Plotting the pH 
+qplot(pH, 
+      data = wwq,
+      xlab = 'pH',
+      color = I('black'),
+      fill = I('purple')) +
+  scale_x_continuous(limits = c(2.7, 3.82), 
+                     breaks = seq(2.7, 3.82, 0.1))
+
+#The distribution of the variables are positively skewed.
+#Most wines have a pH ranging from 2.5 to 3.9
+summary(wwq$pH)
+
+#Plotting Sulphates
+qplot(sulphates, 
+      data = wwq,
+      xlab = 'Potassium Sulphates',
+      color = I('black'),
+      fill = I('blue')) +
+  scale_x_continuous(limits = c(0.2, 1.08), 
+                     breaks = seq(0.2, 1.08, 0.1))
+
+#75% of the variable distribution is below 0.55
+#The median is 0.47 and the mean is 0.4898
+summary(wwq$sulphates)
+
+#Plotting Alcohol
+qplot(alcohol, 
+      data = wwq, 
+      binwidth = .25,
+      xlab = 'Alcohol Content',
+      color = I('black'),
+      fill = I('dark grey')) +
+  scale_x_continuous(limits = c(8, 14), 
+                     breaks = seq(8, 14, 1))
+
+#The median is 10.4 and the mean is 10.51. Variable distribution is #slightly positively skewed
+summary(wwq$alcohol)
+
+
+#Quality was measured by taking the average of the 3 expert ratings
+#The experts rated most of wine with a quality of 6
+#Only 5 white wines were rated a quality of 9 in our dataset
+summary(wwq$quality)
+#Plotting the quality
+ggplot(aes(x = quality), data = wwq) + 
+  geom_bar(fill = 'red') +
+  xlab('White Wine Quality')
+
+
+
+
+
+```
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+My data set contains the 4898 observations and 11 numerical variables of chemical properties. I converted the X and quality variables to a factor variable.
+```{r echo=FALSE}
+str(wwq)
+```
+
+### What is/are the main feature(s) of interest in your dataset?
+
+This data set contains 4,898 white wines with 11 variables on quantifying the chemical properties of each wine. At least 3 wine experts rated the quality of each wine, providing a rating between 0 (very bad) and 10 (very excellent).
+Our Guiding Question is which chemical properties influence the quality of white wines.
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+The variables fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, density, free sulfur dioxide, total sulfur dioxide, pH, sulphates, alcohol all contribute to the better quality of white wines.
+
+```{r echo=FALSE}
+#names of my dataset
+names(wwq)
+```
+
+
+### Did you create any new variables from existing variables in the dataset?
+Not really. I however passed my dataset into a new variable called wwq (white wine quality)
+
+# Bivariate Plots Section
+```{r echo=FALSE, Bivariate_Plots}
+
+
+#Creating a bucket for the quality. Rating wines from 0-4 as bad,
+# 5-7 as average and 8-10 as very good
+wwq$quality.bucket <- cut(as.numeric(wwq$quality), 
+                          breaks = c(0, 4,5, 7, 9),
+                          labels = c('poor', 
+                                     'average',
+                                     'better',
+                                     'exquisite'))
+
+#Plotting the alcohol variable against the quality bucket 
+#that has been cut into 4 bins. We see that the white wines rated 
+#between 4-5 have the least alcohol content. 
+alcohol_quality <- ggplot(aes(x = quality.bucket, 
+           y = alcohol), 
+       data = wwq) + 
+  geom_boxplot() + 
+  coord_cartesian(ylim = c(9,13)) +
+  stat_summary(fun.y = mean,
+               geom = 'point',
+               shape = 4)
+
+names(wwq)
+
+#measuring the correlation between chloride variable and quality 
+cor.test(wwq$chlorides, as.numeric(wwq$quality))
+#We have a correlation of -0.2099344 between the chloride variable
+# and the quality variable
+chlorides_quality <- ggplot(aes(x = quality.bucket, 
+           y = chlorides), data = wwq) +     
+  geom_boxplot() 
+
+#testing the correlation between alcohol and the quality variable
+
+cor.test(wwq$alcohol, as.numeric(wwq$quality))
+#we observe a correlation of 0.4355747. A positive correlation
+#indicating a strong relationship between the ratings generally
+#by the wine experts.
+
+#Plotting the boxplots of density and the quality buckets
+density_quality <- ggplot(aes(x= quality.bucket, y = density), data = wwq) +
+  geom_boxplot() +
+  coord_cartesian( ylim = c(0.99,1))+
+  stat_summary(fun.y = mean,
+               geom = 'point',
+               shape = 3)
+library(gridExtra)
+grid.arrange(alcohol_quality, density_quality, ncol = 1)  
+#wwq %>%
+ # group_by(quality)%>%
+#summarise(mean_quality = mean(quality))
+ # ungroup()
+```
+
+
+# Density Versus Alcohol Plot
+
+```{r echo=FALSE}
+#Plotting Desnity versus Alcohol
+ggplot(aes(x = density, y = alcohol), 
+       data = wwq) + 
+  geom_jitter(alpha = 0.4)+
+  coord_cartesian(xlim = c(0.98,1.01),
+                  ylim = c(8,14))
+  
+```
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+I checked the correlation between alcohol variable and quality variable
+and  found both variables to be strongly positively correlated. The 
+correlation between the two variables alcohol and quality is 
+0.435547.
+On checking the correlation between chloride variable and quality,
+I found both variables to be weakly negatively correlated. The 
+correlation between the two variables chlorides and quality is
+-0.2099344
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+Another interesting relationship i observed is that, on plotting
+the alcohol variable against density, we observe a negative slope.
+
+### What was the strongest relationship you found?
+
+The strongest relationship would be that alcohol content is a major 
+factor that determines the quality of white wines. More investigations
+need to be done on this.
+
+
+
+# Multivariate Plots Section
+
+
+###  Alcohol, Density, Quality
+
+Alcohol has a strong correlation to quality of wine. Density and 
+alcohol have a negative correlation of -0.7801376
+
+```{r echo=FALSE}
+#correlation test of alcohol with density
+cor.test(wwq$density, wwq$alcohol)
+
+```
+
+# Alchol, Density and Quality cont'd
+```{r echo=FALSE, Multivariate_Plots}
+
+#visualizing the relationship between alcohol, density and quality
+ggplot(aes(x = alcohol, y = density), 
+       data = wwq) +
+  geom_point(aes(color = quality.bucket))+
+  coord_cartesian(ylim = c(0.985, 1.005)) +
+  geom_vline(xintercept = 11, linetype = 2) +
+  geom_hline(yintercept = 0.995, linetype = 2)
+#Wines rated poor have a low alcohol content.
+
+
+```
+
+# Alcohol, Residual Sugar and Density
+
+```{r echo=FALSE}
+#visualizing Residual Sugar and density
+ggplot(aes(x = residual.sugar,
+           y = density), data = wwq) +
+  geom_point(aes(color = alcohol ), alpha = 1/5)+
+  coord_cartesian(xlim = c(0,30), 
+                  ylim = c(0.985, 1.005)) +
+  geom_smooth()
+  
+#Visualizing Alcohol, Residual sugar, Density, and quality
+#Dealing only with the ratios
+wwq <- transform(wwq, 
+                 sugar.alcohol.ratio = residual.sugar/alcohol)
+ggplot(aes(x= sugar.alcohol.ratio,
+           y = density), data = wwq) +
+  geom_point(aes(color = quality.bucket) ) +#, alpha = 1/10)+
+  coord_cartesian(xlim = c(0,3), ylim = c(0.985, 1.005))+
+  geom_smooth()
+#The smooth line shows that wines rated average have a lower
+#density than wines rated poor
+
+#Plotting residual sugar and alcohol
+ggplot(aes(x = log10(residual.sugar), y = alcohol), data = wwq) +
+  geom_jitter(aes(color = quality.bucket))+
+  coord_cartesian(xlim = c(0, 2), ylim = c(8, 14)) 
+
+```
+
+
+# Multivariate Analysis
+
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+### Were there any interesting or surprising interactions between features?
+From our first plot of density against alcohol we can observe that 
+on wines with higher densities are rated poor while wines 
+with lower densities are rated better in term of quality.
+It is also observed that wines rated poor have a lower alcohol
+content. Perhaps, our experts think that the more the alcohol
+in the wine, the better the wine served.
+
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+# Alcohol and Quality Bucket.
+
+```{r echo=FALSE, Plot_One}
+#visualizing Alcohol and quality bucket relationship
+ggplot(aes(x = quality.bucket,
+           y = alcohol), data = wwq) +
+  geom_boxplot() +
+  stat_summary(fun.y = mean, 
+               geom = 'point',
+               shape = 4) +
+  coord_cartesian(ylim = c(9,13))+
+  labs(title = 'Alcohol by Quality')+
+  ylab('Alcohol')+
+  xlab('Quality')
+
+```
+
+### Description One
+Average and Better rated wines have a alcohol content of 11 - 13.
+Poor wines have lower alcohol content as rated by the experts.
+
+
+### Plot Two
+# Residual Sugar and Density
+```{r echo=FALSE, Plot_Two}
+#visualizing relationship between residual sugar and density
+ggplot(aes(x = log10(residual.sugar),
+           y = density), data = wwq) +
+  geom_jitter(aes(color = alcohol ))+
+  coord_cartesian(xlim = c(0,1.5), 
+                  ylim = c(0.985, 1.005)) +
+  geom_smooth(method = 'auto', color = 'red')+
+  labs(title = 'Residual Sugar vs Density')+
+  xlab('Residual Sugar') +
+  ylab('Density')
+
+```
+
+### Description Two
+Better rated wines have a lower density than poorly rated wines.
+
+### Plot Three
+
+# Residual Sugar and Alcohol
+```{r echo=FALSE, Plot_Three}
+
+# Visualizing Residual sugar and Alcohol
+ggplot(aes(x = log10(residual.sugar), 
+           y = alcohol), data = wwq) +
+  geom_jitter(aes(color = quality.bucket))+
+  coord_cartesian(xlim = c(0, 1.5), 
+                  ylim = c(8, 14)) +
+  geom_smooth() +
+  labs(title = 'Alcohol vs Residual Sugar')+
+  xlab('Residual Sugar')+
+  ylab('Alcohol')
+
+```
+
+### Description Three
+
+Average and better rated wines have higher residual sugar.
+```{r echo=FALSE}
+#correlation between residual sugar and alcohol
+
+cor.test(wwq$residual.sugar, wwq$alcohol)
+#correlation between residual sugar and alcohol being tested
+# as 0.4506312
+```
+
+------
+
+# Reflection
+
+The white wine dataset contains 11 distinct chemical properties of 4898
+samples of wine as rated by 3 experts. Each of the wine sampled were 
+rated on the quality of the wine.
+Our goal was to find which properties would most affect the quality of the wine. Checking the correlation between alcohol and the quality of
+wine, I observed that there was a strong positive correlation between 
+the two variables.
+I visualized and the relationship between each variables with each
+other to see which would likely affect the quality of the wine rating
+

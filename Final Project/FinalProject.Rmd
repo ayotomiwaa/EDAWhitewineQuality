@@ -1,0 +1,91 @@
+---
+title: "Final Project"
+author: "Ezekiel Adeniyi"
+date: "March 29, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#get work directory
+getwd()
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Loading and inspecting my data set
+Background
+
+This tidy data set contains 4,898 white wines with 11 variables on quantifying the chemical properties of each wine. At least 3 wine experts rated the quality of each wine, providing a rating between 0 (very bad) and 10 (very excellent).
+Our Guiding Question
+Which chemical properties influence the quality of white wines?
+
+```{r}
+#our data is saved into a variable called wwq
+
+wwq <- read.csv('wineQualityWhites.csv')
+
+names(wwq)
+
+str(wwq)
+
+# there are 4898 observations made in our dataset and there are 13
+#variables. Variable x and quality are an integer number.
+#Plotting our graph
+
+library(ggplot2)
+
+qplot( X, data = wwq)
+qplot(pH, data = wwq)
+
+qplot(log10(X), data = wwq)
+
+```
+Compare the pH and the quality of the wine. 
+Does the pH affect the quality of wine? The wine with the highest
+quality has a value of 9, lowest quality has a value of 3
+
+```{r}
+summary(wwq$pH)
+#summarize 
+summary(wwq$quality)
+
+summary(wwq$alcohol)
+```
+Next steps:
+Investigate and plot histogram of quality
+```{r}
+#here from the plot we see outliers at 3 and 9
+qplot(quality, data = wwq,
+      xlim = c(3,9))
+
+qplot(alcohol, data = wwq, binwidth = 1) #+
+  #scale_x_continuous(breaks = 8,16)
+```
+Add a facet 
+
+```{r}
+qplot(alcohol, data = wwq, binwidth = 1) +
+  facet_wrap(~quality)
+```
+
+
